@@ -1,0 +1,530 @@
+Mplus VERSION 8.1
+MUTHEN & MUTHEN
+03/07/2021   4:12 PM
+
+INPUT INSTRUCTIONS
+
+  !SBDC2. value of car ownership and use
+  !base model: random intercept and *fixed* coefficient for Log_Compensation
+  !weighted (scaled)
+  !including all covariates in full specification
+
+  DATA: FILE = SBDC2_long_wt.csv;
+
+  VARIABLE:
+      NAMES = rownum RID Choice LogComp wt1 wt2 weight wt_scale
+              rural urban wash chic seat
+              male age white black hisp orace coldeg advdeg
+              fulltime unemploy student
+              inc_high inc_low hhinc hhchild hhwkadult hhpers
+              nocar onecar twocar threecar multicar license car_live
+              typ_NMT typ_PT typ_car typ_RH
+              cantbike cantcar cantPT cantRH
+              emp_park emp_PT emp_bike emp_pool;
+
+      IDVARIABLE = rownum;
+
+      CLUSTER = RID;
+
+      CATEGORICAL = Choice;
+
+      !Two-level structure with choice experiments at level 1 (within)
+      !and individuals at level 2 (between). So all sociodemographics are
+      !on between level
+      WITHIN = LogComp;
+      BETWEEN = rural urban wash chic seat
+                male age black hisp orace coldeg advdeg
+                fulltime unemploy student
+                hhinc hhchild hhwkadult onecar
+                typ_car typ_RH typ_PT typ_NMT
+                cantcar
+                emp_park emp_pool emp_PT emp_bike;
+
+      USEVARIABLES = Choice LogComp
+                     rural urban wash chic seat
+                     male age black hisp orace coldeg advdeg
+                     fulltime unemploy student
+                     hhinc hhchild hhwkadult onecar
+                     typ_car typ_RH typ_PT typ_NMT
+                     cantcar
+                     emp_park emp_pool emp_PT emp_bike;
+
+      WEIGHT = wt1;
+      BWEIGHT = weight;
+      wtscale = unscaled;
+      bwtscale = sample;
+      !The SAMPLE option adjusts the between weights so that the product of
+      !the between and the within weights sums to the total sample size.
+
+  ANALYSIS: TYPE = TWOLEVEL;
+
+  MODEL:
+      %WITHIN%
+      Choice ON LogComp;
+
+      %BETWEEN%
+      Choice ON rural urban wash chic seat
+                male age black hisp orace coldeg advdeg
+                fulltime unemploy student
+                hhinc hhchild hhwkadult onecar
+                typ_car typ_RH typ_PT typ_NMT
+                cantcar
+                emp_park emp_pool emp_PT emp_bike;
+
+  SAVEDATA:
+      FILE IS SBDC2_full_wt_out.txt;
+      SAVE = FSCORES;
+
+
+
+*** WARNING in VARIABLE command
+  Note that only the first 8 characters of variable names are used in the output.
+  Shorten variable names to avoid any confusion.
+*** WARNING
+  One or more individual-level variables have no variation within a
+  cluster for the following clusters.
+
+     Variable   Cluster IDs with no within-cluster variation
+
+      CHOICE      1003 1007 1009 1010 1013 1016 1023 1025 1026 1029 1030 1031 1037 1039 1043 1045
+                  1047 1049 1052 1053 1055 1056 1058 1062 1064 1070 1073 1075 1078 1088 1089 1090
+                  1091 1095 1097 1098 110 1105 1107 1108 1115 1116 1121 1124 1125 1126 1134 1137
+                  1139 114 1144 1148 1152 1153 1155 1156 1160 1166 1171 1173 1174 1176 1179 1181
+                  1186 1187 1190 1192 1197 12 1202 1203 1204 1207 121 1214 1219 1221 1224 1225
+                  1226 1227 1237 1239 124 1240 1241 1242 1243 1244 1246 1250 1253 1254 1255 126
+                  1260 1263 1266 1268 1269 127 1274 1285 1286 1287 1288 1289 1290 1296 1300 1301
+                  1305 1308 1309 131 1310 1313 1319 1322 1325 1327 1331 1337 1338 134 1340 1343
+                  1344 1347 1348 1349 1351 1352 1354 136 1360 1361 1363 1366 1367 1368 137 1370
+                  1371 1375 1379 1380 1382 1383 1384 1385 1386 1387 139 1393 1396 14 140 1401
+                  1406 1408 1415 1416 1417 1418 1423 1424 1425 143 1431 1434 1437 144 1440 1443
+                  1446 1449 1452 1453 1463 1468 1473 1479 1481 1482 1483 1487 1494 1495 1499 1500
+                  1501 1503 1504 1506 1508 151 1516 1518 1519 152 1520 1525 1528 1530 1531 1532
+                  1534 1539 154 1540 1547 1549 155 1558 156 1562 1563 1566 157 1572 1575 158 1580
+                  1589 1592 1593 1594 1596 1597 1598 160 1600 1604 1609 161 1613 1614 1616 1618
+                  1621 1622 1624 1626 1632 1633 1637 1642 1645 1648 165 1654 1655 1658 166 1662
+                  1665 1668 1669 1670 1673 1677 1680 1684 169 1690 1694 1696 1705 1710 1711 1712
+                  1713 1716 1718 1719 1721 1732 1734 1735 1736 1737 1739 174 1742 1749 1753 176
+                  1762 1763 1784 1786 1787 179 1792 1793 1796 1800 1802 1803 1804 1805 1811 1812
+                  1818 1820 1822 1823 1825 1827 1828 1832 1838 1839 1842 1843 1847 185 1853 1854
+                  1859 1860 1864 1867 1874 1877 1879 1881 1885 1889 189 1893 19 1903 1906 1908
+                  1910 1911 1912 1914 1919 1922 1928 1929 193 1930 1933 1934 1935 1937 1938 194
+                  1940 1942 1946 195 1954 1959 196 1962 1963 1964 1965 1968 1970 1976 1977 1978
+                  1981 1987 1989 1994 1998 1999 200 2001 2004 2011 2012 2013 2026 2031 2033 2035
+                  2043 2044 205 2051 2054 2060 2061 2067 2068 2074 2079 2081 2083 2085 2088 2090
+                  2091 2096 2097 2098 2099 21 210 2100 2107 211 2112 2119 212 2125 2130 2131 2133
+                  2135 2137 2142 2146 215 2153 2154 2158 2163 2169 2170 2171 2184 2186 2189 219
+                  2195 2203 2206 2208 2224 2227 2229 2234 2235 224 2240 2241 2242 2248 2252 2254
+                  2255 2261 2266 2267 2269 2270 2272 2276 2277 2279 2281 2283 2286 2287 2289 2290
+                  2294 2295 2296 2298 2317 2318 2319 232 2320 2321 2324 2325 2327 233 2331 2344
+                  2352 2357 2361 2366 2368 237 2375 2377 2379 238 2380 2387 239 2391 2394 2399
+                  24 2404 2406 2410 2411 2412 2413 2417 2419 2421 2423 2424 2425 2427 2428 2438
+                  2441 2442 2444 2445 2446 245 2451 2456 2472 2474 2478 2480 2482 2484 2489 2491
+                  2499 2500 2501 2505 2507 2508 251 2510 2511 2513 2515 2520 2524 2525 2526 253
+                  2535 254 2549 2550 2554 2557 2561 2562 2566 257 2576 2577 2579 258 2583 2586
+                  2589 2591 2599 26 2603 2607 2608 2609 261 2610 2611 2614 2624 2625 2627 2630
+                  2632 2633 2634 2636 2639 264 2641 2642 2649 2650 2652 2654 2655 2658 266 2660
+                  2664 2666 2669 2672 2675 2676 2679 2687 2688 269 2694 2695 2703 2707 271 2712
+                  2713 2716 2717 2722 2723 2729 2735 2739 2740 2747 2749 2750 2751 2753 2754 2756
+                  2757 2759 276 2761 2762 2763 2764 2767 2772 2775 2777 278 2783 2788 2790 2794
+                  2795 28 280 2801 2803 2805 2807 2811 2814 2817 2818 282 2821 2828 2829 283 2830
+                  2834 2839 2846 2847 2848 2854 2861 2864 2866 2868 287 2870 2871 2877 2879 288
+                  2882 2883 2885 2888 2890 2894 2902 2907 2910 2912 2915 2917 2919 292 2921 2928
+                  2929 2931 2933 2936 2937 2938 2941 2943 2948 2950 2953 2955 296 2961 2964 2965
+                  2967 2969 2971 2973 2979 2981 2986 2990 2993 2995 2998 300 3004 3006 3008 3009
+                  301 3011 3017 3022 3023 3026 3029 303 3034 3038 3039 3044 3045 3046 3047 3048
+                  3050 3054 3059 3067 3069 3077 3078 3079 308 3082 3084 3087 3089 309 3096 310
+                  3100 3101 3102 3103 3104 3107 311 3111 3112 3116 3117 3123 3125 3127 3134 3136
+                  314 3140 3145 3146 3147 3148 3150 3152 3153 3159 316 3162 3163 3165 3169 3172
+                  3173 3176 3179 3181 3182 3192 3193 3194 3198 32 3206 3208 3225 3227 3230 3231
+                  3232 3234 3236 3237 3239 324 3243 3246 3248 3251 3256 3258 326 3261 3268 3269
+                  3273 3277 3279 329 3290 3294 3298 33 3311 3315 3319 3320 3325 3327 3330 3331
+                  3333 3334 3336 3337 3339 334 3342 3343 3347 3349 3350 3351 3354 336 3361 3362
+                  3366 3368 337 3371 3373 3376 3377 3379 3386 3388 339 3390 3391 3395 340 3403
+                  3404 3412 3413 3414 3425 3427 3428 343 3430 3433 3435 3436 3440 3444 3445 3447
+                  3448 3450 3451 3456 3457 3459 3464 3465 3466 3467 3470 3476 3478 3480 3481 3482
+                  3492 3495 3496 3498 3499 3502 3517 3519 3522 3523 3525 3527 353 3531 3534 3536
+                  3538 3540 3541 3543 3544 3548 3550 3555 3558 356 3560 3565 3567 3573 3575 3576
+                  3578 3579 3584 3585 3587 3588 3590 3593 3596 3597 3598 3603 3606 3609 3611 3612
+                  3613 3615 362 3621 3622 3623 3631 3634 3635 3638 3643 3644 3655 3656 3658 366
+                  3661 3666 3667 367 3672 3675 368 3686 369 3690 3692 3693 3694 3696 3697 3698
+                  37 3700 3702 3707 3708 3719 372 3723 3728 373 3730 3740 3741 3743 3747 375 3755
+                  3758 3763 3766 3769 3776 3778 378 3784 3789 3790 3792 3794 3797 3798 3799 3800
+                  3801 3807 3809 3815 3818 3819 382 3820 3822 3823 3824 3828 3836 3839 3842 3848
+                  3855 3859 3861 3863 3865 3867 3868 3869 387 3870 3873 3875 3876 3883 3884 3885
+                  3886 3891 3893 3894 3896 3897 39 3901 3902 3908 3913 3914 3915 3917 3919 392
+                  3926 3931 3936 3941 3945 3946 3948 3952 3954 3959 3966 3967 3969 397 3972 3973
+                  3975 3976 3985 3986 3990 3992 3994 3996 3998 400 4003 4004 4006 4007 4008 4009
+                  401 4010 4012 4018 4022 403 410 411 412 419 421 422 426 427 429 431 433 434
+                  437 438 44 445 447 448 449 451 452 453 455 457 458 460 461 467 468 470 471 472
+                  473 474 476 478 481 482 485 488 49 490 491 495 503 505 506 512 516 519 521 527
+                  528 529 530 531 539 540 543 547 552 553 555 556 56 560 565 567 57 571 573 575
+                  576 577 579 580 592 596 598 599 600 601 603 604 605 608 610 611 612 615 616
+                  617 618 619 62 624 626 628 629 632 634 639 640 643 644 646 649 654 655 656 663
+                  668 675 679 680 681 682 686 687 689 69 693 697 699 7 703 704 705 71 711 714
+                  717 718 72 725 726 73 730 734 735 736 742 743 744 747 748 750 752 754 755 758
+                  76 761 763 764 767 769 771 774 775 780 782 786 787 789 790 797 798 804 805 806
+                  807 808 81 811 813 814 816 820 822 823 829 830 831 834 836 838 840 844 849 85
+                  850 851 853 857 859 862 863 864 866 867 868 87 871 875 876 878 88 880 881 886
+                  892 893 895 896 898 900 901 903 904 905 907 908 910 911 912 913 915 917 919
+                  920 923 924 927 931 935 937 94 949 952 954 97 975 976 977 979 988 989 99 990
+                  991 992 993 995 999
+
+   2 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                       15148
+
+Number of dependent variables                                    1
+Number of independent variables                                 29
+Number of continuous latent variables                            0
+
+Observed dependent variables
+
+  Binary and ordered categorical (ordinal)
+   CHOICE
+
+Observed independent variables
+   LOGCOMP     RURAL       URBAN       WASH        CHIC        SEAT
+   MALE        AGE         BLACK       HISP        ORACE       COLDEG
+   ADVDEG      FULLTIME    UNEMPLOY    STUDENT     HHINC       HHCHILD
+   HHWKADUL    ONECAR      TYP_CAR     TYP_RH      TYP_PT      TYP_NMT
+   CANTCAR     EMP_PARK    EMP_POOL    EMP_PT      EMP_BIKE
+
+Variables with special functions
+
+  Cluster variable      RID
+  Weight variable (unscaled)
+    WT1
+  Between weight variable (sample-size scaling)
+    WEIGHT
+  ID variable           ROWNUM
+
+  Within variables
+   LOGCOMP
+
+  Between variables
+   RURAL       URBAN       WASH        CHIC        SEAT        MALE
+   AGE         BLACK       HISP        ORACE       COLDEG      ADVDEG
+   FULLTIME    UNEMPLOY    STUDENT     HHINC       HHCHILD     HHWKADUL
+   ONECAR      TYP_CAR     TYP_RH      TYP_PT      TYP_NMT     CANTCAR
+   EMP_PARK    EMP_POOL    EMP_PT      EMP_BIKE
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-02
+    Relative loglikelihood change                        0.100D-05
+    Derivative                                           0.100D-02
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-02
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Optimization algorithm                                         EMA
+Integration Specifications
+  Type                                                    STANDARD
+  Number of integration points                                  15
+  Dimensions of numerical integration                            1
+  Adaptive quadrature                                           ON
+Link                                                         LOGIT
+Cholesky                                                        ON
+
+Input data file(s)
+  SBDC2_long_wt.csv
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of clusters                       3787
+
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    CHOICE
+      Category 1    0.560         8490.000
+      Category 2    0.440         6658.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     LOGCOMP               8.784      -0.709       4.605    6.19%       7.601      8.517      8.923
+           15148.000       3.138      -0.209      11.225    6.26%       9.616     10.309
+     RURAL                -4.045     -49.083   -9999.000    0.05%       0.000      0.000      0.000
+            3787.000   41431.956    2407.156       1.000    9.43%       0.000      0.000
+     URBAN                -3.562     -49.083   -9999.000    0.05%       0.000      0.000      1.000
+            3787.000   41436.114    2407.139       1.000   58.81%       1.000      1.000
+     WASH                  0.250       1.156       0.000   75.07%       0.000      0.000      0.000
+            3787.000       0.187      -0.663       1.000   24.93%       0.000      1.000
+     CHIC                  0.245       1.184       0.000   75.36%       0.000      0.000      0.000
+            3787.000       0.185      -0.597       1.000   24.64%       0.000      1.000
+     SEAT                  0.250       1.153       0.000   75.15%       0.000      0.000      0.000
+            3787.000       0.188      -0.671       1.000   24.85%       0.000      1.000
+     MALE                  0.510      -0.041       0.000   60.05%       0.000      0.000      0.000
+            3787.000       0.250      -1.998       1.000   39.95%       0.000      1.000
+     AGE                  47.595      -0.036      18.000    2.72%      29.000     39.000     43.000
+            3787.000     299.359      -1.052      90.000    0.05%      50.000     62.000
+     BLACK                 0.092       2.823       0.000   90.36%       0.000      0.000      0.000
+            3787.000       0.084       5.972       1.000    9.64%       0.000      0.000
+     HISP                  0.068       3.431       0.000   91.31%       0.000      0.000      0.000
+            3787.000       0.063       9.772       1.000    8.69%       0.000      0.000
+     ORACE                 0.137       2.112       0.000   85.61%       0.000      0.000      0.000
+            3787.000       0.118       2.461       1.000   14.39%       0.000      0.000
+     COLDEG                0.294       0.904       0.000   66.68%       0.000      0.000      0.000
+            3787.000       0.208      -1.184       1.000   33.32%       0.000      1.000
+     ADVDEG                0.343       0.663       0.000   75.02%       0.000      0.000      0.000
+            3787.000       0.225      -1.560       1.000   24.98%       0.000      1.000
+     FULLTIME              0.494       0.024       0.000   51.91%       0.000      0.000      0.000
+            3787.000       0.250      -1.999       1.000   48.09%       1.000      1.000
+     UNEMPLOY              0.106       2.562       0.000   86.88%       0.000      0.000      0.000
+            3787.000       0.095       4.566       1.000   13.12%       0.000      0.000
+     STUDENT               0.052       4.050       0.000   94.30%       0.000      0.000      0.000
+            3787.000       0.049      14.403       1.000    5.70%       0.000      0.000
+     HHINC               116.377       0.191       5.000    2.88%      42.500     62.500     87.500
+            3787.000    5028.344      -1.291     225.000   11.33%     125.000    175.000
+     HHCHILD               0.462       2.179       0.000   62.27%       0.000      0.000      0.000
+            3787.000       0.809       4.830       5.000    0.55%       0.000      1.000
+     HHWKADULT             1.512       0.555       0.000   14.76%       1.000      1.000      2.000
+            3787.000       1.108       0.474       5.000    1.16%       2.000      2.000
+     ONECAR                0.234       1.259       0.000   68.55%       0.000      0.000      0.000
+            3787.000       0.179      -0.416       1.000   31.45%       0.000      1.000
+     TYP_CAR              14.725      11.922       0.000    3.88%       4.000      8.000     10.000
+            3787.000     544.603     222.925     500.000    0.05%      12.000     20.000
+     TYP_RH                1.490      11.564       0.000   70.85%       0.000      0.000      0.000
+            3787.000      33.861     188.745     149.000    0.03%       0.000      2.000
+     TYP_PT                1.189      10.622       0.000   81.54%       0.000      0.000      0.000
+            3787.000      21.808     204.444     145.000    0.03%       0.000      0.000
+     TYP_NMT               3.616       7.384       0.000   57.99%       0.000      0.000      0.000
+            3787.000      78.752      93.785     214.000    0.03%       1.000      5.000
+     CANTCAR               0.147       1.998       0.000   83.87%       0.000      0.000      0.000
+            3787.000       0.125       1.991       1.000   16.13%       0.000      0.000
+     EMP_PARK              0.301       0.869       0.000   69.98%       0.000      0.000      0.000
+            3787.000       0.210      -1.246       1.000   30.02%       0.000      1.000
+     EMP_POOL              0.072       3.306       0.000   92.42%       0.000      0.000      0.000
+            3787.000       0.067       8.930       1.000    7.58%       0.000      0.000
+     EMP_PT                0.122       2.314       0.000   87.48%       0.000      0.000      0.000
+            3787.000       0.107       3.353       1.000   12.52%       0.000      0.000
+     EMP_BIKE              0.080       3.091       0.000   93.08%       0.000      0.000      0.000
+            3787.000       0.074       7.554       1.000    6.92%       0.000      0.000
+
+
+     WARNING:  THE SAMPLE COVARIANCE OF THE INDEPENDENT VARIABLES IS SINGULAR.
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       31
+
+Loglikelihood
+
+          H0 Value                       -7291.157
+          H0 Scaling Correction Factor      2.4333
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                   14644.314
+          Bayesian (BIC)                 14880.709
+          Sample-Size Adjusted BIC       14782.193
+            (n* = (n + 2) / 24)
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Within Level
+
+ CHOICE     ON
+    LOGCOMP            1.191      0.063     19.042      0.000
+
+Between Level
+
+ CHOICE     ON
+    RURAL             -0.273      0.248     -1.101      0.271
+    URBAN              0.434      0.150      2.892      0.004
+    WASH               0.085      0.192      0.442      0.659
+    CHIC              -0.135      0.193     -0.698      0.485
+    SEAT              -0.138      0.184     -0.752      0.452
+    MALE               0.426      0.141      3.015      0.003
+    AGE               -0.016      0.005     -3.051      0.002
+    BLACK              0.197      0.249      0.792      0.429
+    HISP               0.134      0.253      0.531      0.596
+    ORACE              0.222      0.203      1.094      0.274
+    COLDEG            -0.171      0.166     -1.034      0.301
+    ADVDEG             0.030      0.185      0.160      0.873
+    FULLTIME           0.192      0.169      1.139      0.255
+    UNEMPLOY           0.516      0.234      2.206      0.027
+    STUDENT            0.106      0.320      0.330      0.741
+    HHINC             -0.002      0.001     -2.141      0.032
+    HHCHILD            0.181      0.081      2.247      0.025
+    HHWKADULT         -0.156      0.078     -2.008      0.045
+    ONECAR            -0.002      0.170     -0.010      0.992
+    TYP_CAR           -0.005      0.007     -0.740      0.459
+    TYP_RH             0.009      0.014      0.647      0.517
+    TYP_PT             0.029      0.018      1.625      0.104
+    TYP_NMT            0.030      0.008      3.628      0.000
+    CANTCAR            0.484      0.217      2.230      0.026
+    EMP_PARK           0.043      0.160      0.267      0.790
+    EMP_POOL           0.117      0.230      0.509      0.610
+    EMP_PT             0.313      0.203      1.538      0.124
+    EMP_BIKE          -0.011      0.262     -0.040      0.968
+
+ Thresholds
+    CHOICE$1          10.754      0.723     14.866      0.000
+
+ Residual Variances
+    CHOICE             5.161      0.532      9.709      0.000
+
+
+LOGISTIC REGRESSION ODDS RATIO RESULTS
+
+                                         (Est. - 1) Two-Tailed
+                    Estimate       S.E.     / S.E.    P-Value
+
+Within Level
+
+ CHOICE     ON
+    LOGCOMP            3.291      0.206     11.128      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.625E-06
+       (ratio of smallest to largest eigenvalue)
+
+
+SAMPLE STATISTICS FOR ESTIMATED FACTOR SCORES
+
+
+     SAMPLE STATISTICS
+
+
+           Means
+              B_CHOICE      B_CHOICE
+              ________      ________
+               -1.195         1.310
+
+
+           Covariances
+              B_CHOICE      B_CHOICE
+              ________      ________
+ B_CHOICE    1375.377
+ B_CHOICE      -0.858         0.028
+
+
+           Correlations
+              B_CHOICE      B_CHOICE
+              ________      ________
+ B_CHOICE       1.000
+ B_CHOICE      -0.137         1.000
+
+
+SAVEDATA INFORMATION
+
+
+  Save file
+    SBDC2_full_wt_out.txt
+
+  Order and format of variables
+
+    CHOICE         F10.3
+    LOGCOMP        F10.3
+    RURAL          F10.3
+    URBAN          F10.3
+    WASH           F10.3
+    CHIC           F10.3
+    SEAT           F10.3
+    MALE           F10.3
+    AGE            F10.3
+    BLACK          F10.3
+    HISP           F10.3
+    ORACE          F10.3
+    COLDEG         F10.3
+    ADVDEG         F10.3
+    FULLTIME       F10.3
+    UNEMPLOY       F10.3
+    STUDENT        F10.3
+    HHINC          F10.3
+    HHCHILD        F10.3
+    HHWKADUL       F10.3
+    ONECAR         F10.3
+    TYP_CAR        F10.3
+    TYP_RH         F10.3
+    TYP_PT         F10.3
+    TYP_NMT        F10.3
+    CANTCAR        F10.3
+    EMP_PARK       F10.3
+    EMP_POOL       F10.3
+    EMP_PT         F10.3
+    EMP_BIKE       F10.3
+    B_CHOICE       F10.3
+    B_CHOICE_SE    F10.3
+    WT1            F10.3
+    WEIGHT         F10.3
+    ROWNUM         I6
+    RID            I5
+
+  Save file format
+    34F10.3 I6 I5
+
+  Save file record length    10000
+
+
+DIAGRAM INFORMATION
+
+  Mplus diagrams are currently not available for multilevel analysis.
+  No diagram output was produced.
+
+
+     Beginning Time:  16:12:59
+        Ending Time:  16:13:15
+       Elapsed Time:  00:00:16
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2018 Muthen & Muthen
